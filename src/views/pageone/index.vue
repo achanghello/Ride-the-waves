@@ -1,15 +1,16 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
- </div>
+  <div>
+    <h1>页面一</h1>
+  </div>
 </template>
-
+  
 <script>
 export default {
-  name: 'App'
-}
+  name: "pageone"
+};
 </script>
 
 <style>
-
 </style>
+  
+ 
