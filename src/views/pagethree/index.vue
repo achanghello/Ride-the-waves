@@ -1,149 +1,214 @@
 <template>
   <div>
-    <h1>动态排名</h1>
-    <svg id="svg" width="1000px" height="800px">
+    <div class="bt">
+      <div class="bti" :class="{'active':currentshow==='confirmedCount'}" @click="changecurrentshow('confirmedCount')" >累计确诊</div>
+      <div class="bti" :class="{'active':currentshow==='curedCount'}" @click="changecurrentshow('curedCount')">累计治愈</div>
+      <div class="bti" :class="{'active':currentshow==='deadCount'}" @click="changecurrentshow('deadCount')">累计死亡</div>
+    </div>
+    <svg id="svg" width="1250px" height="611px">
+      <Bgscale :maxvalue="maxvalue" ref="bgscale"></Bgscale>
+      <template v-for="(item, index) in departments">
+        <Baritem
+          :jkey="item.provinceName"
+          :color="item.color"
+          :value="item[currentshow]"
+          :oldvalue="item.oldvalue"
+          :th="sort.indexOf(index)"
+          :maxvalue="maxvalue"
+        ></Baritem>
+      </template>
       <g>
-        <g
-          v-for="i in Math.floor(max / 100)"
-          :key="i"
-          class="labelg"
-          :transform="`translate(${((i * 100) / max) * 750 + 50},0)`"
-        >
-          <transition name="h1">
-            <g v-show="i % Math.floor(max / 750) == 0">
-              <line stroke="#C0C0BB" y2="600"></line>
-              <text y="600">{{ i * 100 }}</text>
-            </g>
-          </transition>
-        </g>
-      </g>
-      <!-- <line stroke="#C0C0BB" x1="100" y1="100" x2="200" y2="200"></line> -->
-      <g
-        v-for="(item, index) in departments"
-        :key="item.department"
-        class="labelg"
-        :transform="`translate(0,${item.s * 100})`"
-      >
-        <rect
-          class="rect"
-          :width="(item.value / max) * 750"
-          style="fill: rgb(0, 0, 255); stroke-width: 1; stroke: rgb(0, 0, 0)"
-        />
-        <text :x="0" :y="30" class="ename">{{ item.department }}</text>
-        <countTo
-          :start="item.oldvalue"
-          :end="item.value"
-          :duration="1000"
-          :y="(item.value / max) * 750 + 50"
-        ></countTo>
+        <text :x="730" :y="550" class="date">{{ initdate.slice(0,4) }}-{{ initdate.slice(4,6) }}-{{ initdate.slice(-2) }}</text>
       </g>
     </svg>
-    <p>
-      {{ departments[0].value }}
-    </p>
-
-    <button @click="ha">40</button>
   </div>
 </template>
-      
-    <script>
-// 引入组件
-import CountTo from "./countto.vue";
+        
+      <script>
+import { RECORDS } from "./china_provincedata.json";
+import Baritem from "./bar.vue";
+import Bgscale from "./bgscale.vue"
 export default {
   name: "pagethree",
   data() {
     return {
-      departments: [
-        { department: "部门1", value: 250, s: 0, oldvalue: 0 },
-        { department: "部门2", value: 470, s: 1, oldvalue: 0 },
-        { department: "部门3", value: 200, s: 2, oldvalue: 0 },
-        { department: "部门4", value: 180, s: 3, oldvalue: 0 },
-        { department: "部门5", value: 100, s: 4, oldvalue: 0 },
-        { department: "部门6", value: 340, s: 5, oldvalue: 0 },
-      ],
-      max: 750,
+      departments: [],
+      initdate: "20200129",
+      timer: null,
+      sort: [],
+      maxvalue: 600,
+      currentshow:"confirmedCount"
     };
   },
   mounted() {
-    setInterval(() => {
-      let arr = JSON.parse(JSON.stringify(this.departments));
-      arr.sort((x, y) => y.value - x.value);
-      if (arr[0].value > this.max) {
-        this.max = arr[0].value;
-      }
-      for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < this.departments.length; j++) {
-          if (arr[i].department == this.departments[j].department) {
-            this.departments[j].s = i;
-          }
-        }
-      }
-      this.departments.forEach((element) => {
-        element.oldvalue = element.value;
-        element.value += Math.random() * 50;
-      });
-    }, 1000);
-  },
-  methods: {
-    ha() {
-      document.getElementById("sb").classList.remove("one");
-      document.getElementById("sb").classList.add("five");
-      document.getElementById("sb").setAttribute("y", 150);
-      document.getElementById("sb").setAttribute("height", 400);
-    },
+    this.Init()
   },
   components: {
-    // 注册组件
-    CountTo,
+    Baritem,
+    Bgscale
   },
+  methods:{
+    Init(){
+      this.timer = setInterval(() => {
+      this.departments = RECORDS.filter((item) => item.dateId == this.initdate);
+      // console.log(this.departments);
+      const {currentshow} = this
+      let colors = ["purple", "orange", "red", "green", "blue", "brown"];
+      for (let i = 0; i < this.departments.length; i++) {
+        this.departments[i].oldvalue = 0;
+        this.departments[i][currentshow] = Number(
+          this.departments[i][currentshow]
+        );
+        this.departments[i].color = colors[i % 6];
+      }
+      this.sort = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,3,31,32,33]
+      let hahah = this.departmentnum()
+      this.dealdepart(hahah,0,33)
+      if(hahah[0]>this.maxvalue){
+        this.maxvalue = hahah[0]
+      }
+      this.datechange();
+    }, 1000);
+    },
+    datechange(){
+      const { initdate } = this
+      const enddate = initdate.slice(-2)
+      // console.log("日子-",initdate)
+      switch(Number(initdate[5])) {
+        case 1:
+          // 执行第一个代码块
+          // console.log("一月")
+          if(enddate=="31"){
+            this.initdate = "20200201"
+          }else{
+            this.initdate = String(Number(initdate)+1)
+          }
+          break;
+        case 2:
+          // 执行第二个代码块
+          // console.log("二月")
+          if(enddate=="29"){
+            this.initdate = "20200301"
+          }else{
+            this.initdate = String(Number(initdate)+1)
+          }
+          break;
+        case 3:
+          // 执行第三个代码块
+          // console.log("三月")
+          if(enddate=="31"){
+            this.initdate = "20200401"
+          }else{
+            this.initdate = String(Number(initdate)+1)
+          }
+          break;
+        case 4:
+          // console.log("四月")
+          if(enddate=="30"){
+            this.initdate = "20200501"
+          }else{
+            this.initdate = String(Number(initdate)+1)
+          }
+          break;
+        case 5:
+          // console.log("五月")
+          if(enddate=="31"){
+            this.initdate = "20200601"
+          }else{
+            this.initdate = String(Number(initdate)+1)
+          }
+          break;
+        case 6:
+          // console.log("六月")
+          if(enddate=="30"){
+            this.initdate = "20200701"
+          }else{
+            this.initdate = String(Number(initdate)+1)
+          }
+          break;
+        default:
+          // 执行第四个代码块
+          // console.log("没有月",init)
+          clearInterval(this.timer)
+          break;
+      }
+    },
+    dealdepart(arr,low,high){
+        if(low<high){
+            let point = this.Partition(arr,low,high)
+            this.dealdepart(arr,low,point-1)
+            this.dealdepart(arr,point+1,high) 
+        }
+    },
+    Partition(arr,low,high){
+        let point = arr[low]
+        while(low<high){
+            while(low<high && arr[high]<=point){
+                high--
+            }
+            this.swap(arr,low,high)
+            while(low<high && arr[low]>=point){
+                low++
+            }
+            this.swap(arr,low,high)
+        }
+        return low
+    },
+    swap(arr,low,high){
+        let temp = arr[low]
+        arr[low] = arr[high]
+        arr[high] = temp
+
+        let test = this.sort[low]
+        this.sort[low] = this.sort[high]
+        this.sort[high] = test
+    },  
+    departmentnum(){
+        return this.departments.map(item=>item[this.currentshow])
+    },
+    changecurrentshow(str){ 
+      this.$refs.bgscale.basenumber = 100
+      this.currentshow = str
+      this.departments = []
+      this.initdate = "20200129"
+      clearInterval(this.timer)
+      this.timer = null
+      this.sort = []
+      this.maxvalue = 600
+      this.Init()
+    }
+  }
 };
 </script>
-    
-<style lang="scss" scoped>
-.rect {
-    transition: all 1s linear;
-    // width: 53px;
-    // y: 30;
-    height: 53px;
-    x: 50;
-  }
-  .labelg {
-    transition: all 1s linear;
-  }
-  
-  .ename {
-    font-size: 15pt;
-    font-family: "Fira Code", "Source Han Sans CN";
-    font-weight: bold;
-    fill: rgb(148, 103, 189);
-  }
-  /*.label {
-    transition: all 1s linear;
-    width: 53px;
-    height: 30px;
-    display: block;
-    position: absolute;
-  }*/
-  
-  /* 1.过渡动画 */
-  @keyframes axisX {
-    from {
-      transform: translateY(-100%);
-    }
-    to {
-      transform: translateY(0px);
-    }
-  }
-  
-  /* 2. 过渡类名 */
-  /* 开始 */
-  .h1-enter-active {
-    animation: axisX 1s;
-  }
-  /* 结束 */
-  .h1-leave-active {
-    animation: axisX 1s reverse;
-  }
-</style>
       
-     
+  <style lang="scss" scoped>
+#svg {
+  // border: 1px solid #000;
+  margin: 0 auto;
+  display: block;
+}
+.date {
+  fill: #5C5C5C;
+  display: table-cell;
+  font-size: 60pt;
+  font-weight: bold;
+  font-family: "Fira Code", "Source Han Sans CN";
+}
+.bt {
+  width: 1250px;
+  margin: 0 auto;
+  display: flex;
+}
+.bti {
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+}
+.active {
+  color:rgb(101,31,255);
+  background-color: #e4d7ff;
+}
+</style>
+        
+       

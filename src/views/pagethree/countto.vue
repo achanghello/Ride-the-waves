@@ -1,16 +1,17 @@
 <template>
-    <text class="labelg ename" :transform="`translate(${y},30)`">{{ Math.round(count) }}</text>
+    <text class="labelg ename"
+          dominant-baseline="middle"
+          :transform="`translate(${y+70},15)`" 
+          :style="`fill: ${color};`">{{ Math.round(count) }}</text>
   </template>
     
     <script>
   export default {
     props: {
       start: {
-        type: Number,
         required: true,
       },
       end: {
-        type: Number,
         required: true,
       },
       duration: {
@@ -19,6 +20,10 @@
       },
       y: {
         type: Number,
+        required: true,
+      },
+      color: {
+        type: String,
         required: true,
       }
     },
@@ -42,12 +47,13 @@
       }
     },
     watch: {
-      start: {
+      end: {
         handler(newVal, oldVal) {
-          this.count = this.start
+          
+          this.count = oldVal
           clearInterval(this.interval)
           this.interval = null
-          this.step = (this.end - this.start) / (this.duration / 10)
+          this.step = (newVal - oldVal) / (this.duration / 10)
           this.m()
         },
         immediate:true
