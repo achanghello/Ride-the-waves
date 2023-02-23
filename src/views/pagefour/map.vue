@@ -3,7 +3,8 @@
  </template>
        
      <script>
-// import mess from './map.json'
+import mess from './map.json'
+import axios from 'axios'
    export default {
      mounted(){
         let canvas = document.querySelector('#container')
@@ -25,21 +26,35 @@
 
         // 地图绘制入口方法
         function init() {
-            let request = new XMLHttpRequest()
-            request.open('get','https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
-            request.setRequestHeader('referer', 'no-referer')
-            request.send()
-            request.onload = function () {
-                if (request.status === 200) {
-                    geoData = JSON.parse(request.responseText)
-                    getBoxArea()
-                    drawMap()
-                }
-            }
-
-            // geoData = mess
+            // let request = new XMLHttpRequest()
+            // request.open('get','https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+            // request.setRequestHeader('referer', 'no-referer')
+            // request.send()
+            // request.onload = function () {
+            //     if (request.status === 200) {
+            //         geoData = JSON.parse(request.responseText)
             //         getBoxArea()
             //         drawMap()
+            //     }
+            // }
+            
+            // const config = {
+            //     headers:{
+            //     referer:"no-referer"
+            //     }
+            // };
+            // const url = "https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json";
+            
+            // axios.get(url, config).then(res=> {
+            //     geoData = res.data
+            //     getBoxArea()
+            //     drawMap()
+            // })
+            
+
+            geoData = mess
+                     getBoxArea()
+                     drawMap()
         }
 
         // 分三步，清空画布、绘制地图各子区域、标注城市名称
