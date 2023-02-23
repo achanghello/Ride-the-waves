@@ -8,10 +8,10 @@
           <Bar></Bar>
           <Pie></Pie>
           <div class="logo-out" @click="hahah">
-            <div class="logo" :class="{fan:!flag, zheng:flag}">
+            <div class="logo" :style="`width:${width}px;height:${hight}px;`" :class="{fan:!flag, zheng:flag}" >
 
             </div>
-            <div class="test" :class="{fan:flag, zheng:!flag}">
+            <div class="test" :style="`width:${width}px;height:${hight}px;`" :class="{fan:flag, zheng:!flag}">
               <h3>乘风破浪打工队</h3>
               <p>一群志同道合的人聚在一起，做一件有意义的事！！！</p>
             </div>
@@ -72,6 +72,15 @@
         this.showlist = arr[0]
       }
     },
+    computed:{
+      hight(){
+         // console.log("组件的高度---",window.innerHeight*0.3)
+         return window.innerHeight*0.3
+      },
+      width(){
+         return window.innerWidth*2/7
+      }
+    },
     components: {
       Bar,
       Pie,
@@ -117,8 +126,8 @@
         position: relative; 
         .logo {
         position: absolute;
-        width: 487px;
-        height: 240.6px;
+        // width: 487px;
+        // height: 240.6px;
         background: url('../../assets/lo.jpg') no-repeat;
         background-size: 100% 100%;
         /* 设置为3d盒子 */
@@ -165,8 +174,8 @@
 .test{
   position: absolute;
   color: white;
-  width: 487px;
-  height: 240.6px;
+  // width: 487px;
+  // height: 240.6px;
   background-color: #0c1a46;      
   backface-visibility: hidden;
   text-align: center;
