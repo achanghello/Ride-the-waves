@@ -24,7 +24,9 @@
 export default {
   name: 'Canvas',
   props: {
-    
+    showlist:{
+      required:true
+    }
   },
   data() {
     return {
@@ -56,6 +58,21 @@ export default {
     this.getData()
     this.setMove(context)
   },
+  watch:{
+    showlist:{
+      handler(newVal, oldVal) {
+        this.tipList=[]
+        clearInterval(this.timer)
+        const context = this.getCanvas();
+    this.drawGird(context, 'lightgray', 10, 10);
+    this.test.infectionsCount=this.showlist.confirmedCount
+    this.test.cureCount=this.showlist.curedCount
+    this.test.deathCount=this.showlist.deadCount
+    this.getData()
+    this.setMove(context)
+      }
+    }
+  },
   methods: {
     //获取到canvas
     getCanvas() {
@@ -67,9 +84,12 @@ export default {
 
     // 拿到数据对象
     getData() {
-      const infectionsPeople = this.test.infectionsPeople;
-      const curePeople = this.test.curePeople;
-      const deathPeople = this.test.deathPeople;
+      // const infectionsPeople = this.test.infectionsPeople;
+      // const curePeople = this.test.curePeople;
+      // const deathPeople = this.test.deathPeople;
+      const infectionsPeople = this.test.infectionsCount;
+      const curePeople = this.test.cureCount;
+      const deathPeople = this.test.deathCount;
       this.addBalls(infectionsPeople, "infections");
       this.addBalls(curePeople, "cure");
       this.addBalls(deathPeople, "death");
@@ -77,7 +97,10 @@ export default {
 
     // 添加小球
     addBalls(person, type) {
-      for (let i = 0; i < person.length; i++) {
+      // for (let i = 0; i < person.length; i++) {
+      //   this.circles.push(this.setProps(type, person[i]));
+      // }
+      for (let i = 0; i < person; i++) {
         this.circles.push(this.setProps(type, person[i]));
       }
     },
@@ -104,7 +127,7 @@ export default {
 
     // 设置定时器
     setMove(context) {
-      setInterval(function () {
+      this.timer = setInterval(function () {
         if (this.paused) {
           context.clearRect(0, 0, context.canvas.width, context.canvas.height);
           this.drawGird(context, 'lightgray', 10, 10);

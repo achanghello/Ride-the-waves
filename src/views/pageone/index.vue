@@ -5,19 +5,19 @@
       <VueAmazingSelector :selectData="selectData1" :defaultValue="defaultValue" name="label" value="value"
         placeholder="请选择省份" :width="160" :height="36" :num="6" v-model="selectedValue" @change="onChange">
       </VueAmazingSelector>
-      <VueAmazingSelector :selectData="selectData2" :defaultValue="defaultValue" name="label" value="value"
+      <!-- <VueAmazingSelector :selectData="selectData2" :defaultValue="defaultValue" name="label" value="value"
         placeholder="请选择年份" :width="160" :height="36" :num="6" v-model="selectedValue" @change="onChange">
-      </VueAmazingSelector>
+      </VueAmazingSelector> -->
       <VueAmazingSelector :selectData="selectData3" :defaultValue="defaultValue" name="label" value="value"
-        placeholder="请选择月份" :width="160" :height="36" :num="6" v-model="selectedValue" @change="onChange">
+        placeholder="请选择月份" :width="160" :height="36" :num="6" v-model="selectedValue" @change="onChange2">
       </VueAmazingSelector>
     </div>
     <div class="container">
-      <Canvas></Canvas>
+      <Canvas :showlist="showlist"></Canvas>
       <div class="notices">
-        <Notice :type="'感染人员'" :number="222232"></Notice>
-        <Notice :type="'治愈人员'" :number="222232"></Notice>
-        <Notice :type="'死亡人员'" :number="222232"></Notice>
+        <Notice :type="'感染人员'" :number="showlist.confirmedCount"></Notice>
+        <Notice :type="'治愈人员'" :number="showlist.curedCount"></Notice>
+        <Notice :type="'死亡人员'" :number="showlist.deadCount"></Notice>
       </div>
     </div>
 </div>
@@ -28,6 +28,7 @@ import Canvas from '../../components/Canvas.vue'
 import Notice from '../../components/Notice.vue'
 import VueAmazingSelector from '../../components/VueAmazingSelector.vue'
 
+import { RECORDS } from "../../assets/china_provincedata.json";
 export default {
   name: 'App',
   components: {
@@ -113,51 +114,63 @@ export default {
         {
           label: '6月',
           value: 6
-        },
-        {
-          label: '7月',
-          value: 7
-        },
-        {
-          label: '8月',
-          value: 8
-        },
-        {
-          label: '9月',
-          value: 9
-        },
-        {
-          label: '10月',
-          value: 10
-        },
-        {
-          label: '11月',
-          value: 11
-        },
-        {
-          label: '12月',
-          value: 12
-        },
+        }
       ],
-      selectData2: [
-        {
-          label: '2020年',
-          value: 1,
+      // selectData2: [
+      //   {
+      //     label: '2020年',
+      //     value: 1,
+      //   },
+      //   {
+      //     label: '2021年',
+      //     value: 2
+      //   },
+      //   {
+      //     label: '2022年',
+      //     value: 3
+      //   },
+      // ]
+      showlist:{
+          confirmedCount:0,//累计确诊
+          confirmedIncr:0,//新增确诊
+          curedCount:0,//累计治愈
+          curedIncr:0,//新增治愈
+          currentConfirmedCount:0,//现存确诊
+          currentConfirmedIncr:0,//新增现存确诊
+          deadCount:0,//累计死亡
+          deadIncr:0,//新增死亡
+          suspectedCount:0,//累计疑似
+          suspectedCountIncr:0,//新增疑似
+          initdate: "20200701",
         },
-        {
-          label: '2021年',
-          value: 2
-        },
-        {
-          label: '2022年',
-          value: 3
-        },
-      ]
+      datas1:[],
+      datas2:[]
     }
   },
   methods: {
     onChange(name, value, index) {
       console.log('item:', name, value, index)
+      if(this.datas1.length===0&&this.datas2.length===0){
+        this.datas1 = RECORDS.filter((item) => item.provinceName == name)
+      }else if(this.datas1.length===0&&this.datas2.length!==0){
+        let arr = this.datas2.filter((item) => item.provinceName == name)
+        this.showlist = arr[0]
+        this.datas1 = []
+      }else if(this.datas1.length!==0&&this.datas2.length===0){
+        this.datas1 = RECORDS.filter((item) => item.provinceName == name)
+      }
+    },
+    onChange2(name, value, index) {
+      console.log('item:', name, value, index)
+      if(this.datas1.length===0&&this.datas2.length===0){
+        this.datas2 = RECORDS.filter((item) => item.dateId == `20200${value}29`)
+      }else if(this.datas1.length!==0&&this.datas2.length===0){
+        let arr = this.datas1.filter((item) => item.dateId == `20200${value}29`)
+        this.showlist = arr[0]
+        this.datas2 = []
+      }else if(this.datas1.length===0&&this.datas2.length!==0){
+        this.datas2 = RECORDS.filter((item) => item.dateId == `20200${value}29`)
+      }
     }
   },
 
@@ -165,6 +178,9 @@ export default {
     selectedValue(to) {
       console.log('selectedValue:', to)
     }
+  },
+  mounted(){
+   //  this.datas = RECORDS.filter((item) => item.dateId == "20200701")
   }
 }
 </script>

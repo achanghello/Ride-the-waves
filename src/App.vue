@@ -1,4 +1,5 @@
 <template>
+  <!-- :bgArr="bgArr" -->
   <div id="app">
     <div class="home">
       <mv-full-page   
@@ -7,12 +8,12 @@
       :isV="isV" 
       :pages="3" 
       :page.sync="currentPage" 
-      :bgArr="bgArr" 
+       
       :isCache="false"
       :transition="{
         duration: '500ms', // 动画时长
         timingFun: 'ease', // 动画速度曲线
-        delay: '0s', // 动画延迟
+        delay: '0s', // 动画延迟 
       }"
       >
       <template #page1>

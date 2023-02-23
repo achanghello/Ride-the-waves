@@ -25,7 +25,7 @@
 </template>
         
       <script>
-import { RECORDS } from "./china_provincedata.json";
+import { RECORDS } from "../../assets/china_provincedata.json";
 import Baritem from "./bar.vue";
 import Bgscale from "./bgscale.vue"
 export default {

@@ -37,7 +37,7 @@
     import Mapc from './map.vue'
     import Show from './show.vue'
 
-    import { RECORDS } from "./china_provincedata.json";
+    import { RECORDS } from "../../assets/china_provincedata.json";
   export default {
     name: "pagefour",
     data(){

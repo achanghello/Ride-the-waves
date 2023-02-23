@@ -3,6 +3,7 @@
  </template>
        
      <script>
+// import mess from './map.json'
    export default {
      mounted(){
         let canvas = document.querySelector('#container')
@@ -25,9 +26,8 @@
         // 地图绘制入口方法
         function init() {
             let request = new XMLHttpRequest()
-            // request.open('get', 'https://geo.datav.aliyun.com/areas_v3/bound/410000_full.json')
             request.open('get','https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
-            //request.open('get', './henan.json')
+            request.setRequestHeader('referer', 'no-referer')
             request.send()
             request.onload = function () {
                 if (request.status === 200) {
@@ -36,6 +36,10 @@
                     drawMap()
                 }
             }
+
+            // geoData = mess
+            //         getBoxArea()
+            //         drawMap()
         }
 
         // 分三步，清空画布、绘制地图各子区域、标注城市名称
