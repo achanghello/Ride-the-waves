@@ -1,12 +1,12 @@
 <template>
     <div class="vue-amazing-selector" :style="`height: ${height}px;`">
         <div :class="['m-select-wrap', { 'hover focus': !disabled, 'disabled': disabled }]"
-            :style="`width: ${width - 2}px; height: ${height - 2}px;`" tabindex="0" @blur="onBlur"
+            :style="`width: ${width - 2}px; height: ${height - 2}px; color: ${color}`" tabindex="0" @blur="onBlur"
             @click="disabled ? e => e.preventDefault() : openSelect()">
             <div :class="['u-select-input', { 'placeholder': !selectedName }]"
                 :style="`line-height: ${height - 2}px;width: ${width - 37}px; height: ${height - 2}px;`"
                 :title="selectedName">{{ selectedName || placeholder }}</div>
-            <svg @click="openSelect" :class="['triangle', { 'rotate': showOptions }]" viewBox="64 64 896 896"
+            <svg @click="openSelect" :class="['triangle', { 'rotate': showOptions }]" :style="`fill: ${color};`" viewBox="64 64 896 896"
                 data-icon="down" aria-hidden="true" focusable="false" class="">
                 <path
                     d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z">
@@ -75,6 +75,10 @@ export default {
         selectedValue: { // v-model当前选中的下拉值
             type: [Number, String, Object],
             default: null
+        },
+        color: {
+            type: String,
+            default: '#000'
         }
     },
     data() {
