@@ -1,15 +1,15 @@
 <template>
   <div class="canvasBox">
-    <div class="canvasCon" @mouseenter="stopMove" @mouseleave="startMove" @mousemove="promptBox">
+    <div class="canvasCon" @mouseenter="stopMove" @mouseleave="startMove">
       <canvas ref="canvas" width='1000' height='550'>
         Canvas not supported
       </canvas>
-      <div class="prompt" v-show="isPrompt" ref="prompt">
+      <!-- <div class="prompt" v-show="isPrompt" ref="prompt">
         <div class="proTop" ref="proTop">
         </div>
         <div class="proCon" ref="proCon">
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="tips">
       <div class="tip" v-for="(item, index) in tipList" :key="index" @click="toShowBall(index)">
@@ -24,8 +24,8 @@
 export default {
   name: 'Canvas',
   props: {
-    showlist:{
-      required:true
+    showlist: {
+      required: true
     }
   },
   data() {
@@ -36,11 +36,11 @@ export default {
         infectionsCount: 30,
         cureCount: 5,
         deathCount: 6,
-        month: '5月',
-        place: '广东省',
-        infectionsPeople: ['2021年2月', '2021年3月'],
-        curePeople: ['2021年2月', '2021年3月'],
-        deathPeople: ['2021年2月', '2021年3月'],
+        // month: '5月',
+        // place: '广东省',
+        // infectionsPeople: ['2021年2月', '2021年3月'],
+        // curePeople: ['2021年2月', '2021年3月'],
+        // deathPeople: ['2021年2月', '2021年3月'],
       },
       tipList: [{ type: '感染人员', color: 'rgba(255,215,0,1.0)' }, { type: '治愈人员', color: 'rgba(143,188,143,1.0)' }, { type: '死亡人员', color: 'rgba(220,20,60,1.0)' }],
       isPrompt: true,
@@ -50,7 +50,9 @@ export default {
     }
   },
   created() {
-
+    this.test.infectionsCount = this.showlist.confirmedCount
+    this.test.cureCount = this.showlist.curedCount
+    this.test.deathCount = this.showlist.deadCount
   },
   mounted() {
     const context = this.getCanvas();
@@ -58,18 +60,19 @@ export default {
     this.getData()
     this.setMove(context)
   },
-  watch:{
-    showlist:{
+  watch: {
+    showlist: {
       handler(newVal, oldVal) {
-        this.tipList=[]
-        clearInterval(this.timer)
-        const context = this.getCanvas();
-    this.drawGird(context, 'lightgray', 10, 10);
-    this.test.infectionsCount=this.showlist.confirmedCount
-    this.test.cureCount=this.showlist.curedCount
-    this.test.deathCount=this.showlist.deadCount
-    this.getData()
-    this.setMove(context)
+        // this.tipList = []
+        // clearInterval(this.timer)
+        // const context = this.getCanvas();
+        // this.drawGird(context, 'lightgray', 10, 10);
+        console.log(this.showlist)
+        this.test.infectionsCount = this.showlist.confirmedCount
+        this.test.cureCount = this.showlist.curedCount
+        this.test.deathCount = this.showlist.deadCount
+        this.circles = [];
+        this.getData()
       }
     }
   },
@@ -201,27 +204,27 @@ export default {
     },
 
     // 鼠标放在小球身上时展示提示框
-    promptBox(e) {
-      let x = e.clientX - this.$refs.canvas.getBoundingClientRect().left;
-      let y = e.clientY - this.$refs.canvas.getBoundingClientRect().top;
-      let flag = false;
+    // promptBox(e) {
+    //   let x = e.clientX - this.$refs.canvas.getBoundingClientRect().left;
+    //   let y = e.clientY - this.$refs.canvas.getBoundingClientRect().top;
+    //   let flag = false;
 
-      for (let i = 0; i < this.circles.length; i++) {
-        if (this.circles[i].x - 5 <= x && x <= this.circles[i].x + 5 && this.circles[i].y - 5 <= y && y <= this.circles[i].y + 5) {
-          this.isPrompt = true;
-          this.$refs.proTop.innerText = this.circles[i].type + '人员';
-          this.$refs.proCon.innerText = `${this.circles[i].type}日期：${this.circles[i].time}`;
-          this.$refs.prompt.style.top = y + 'px';
-          this.$refs.prompt.style.left = x + 'px';
-          this.$refs.prompt.style.display = 'block';
-          flag = true;
-          break;
-        }
-      }
-      if (!flag) {
-        this.isPrompt = false;
-      }
-    },
+    //   for (let i = 0; i < this.circles.length; i++) {
+    //     if (this.circles[i].x - 5 <= x && x <= this.circles[i].x + 5 && this.circles[i].y - 5 <= y && y <= this.circles[i].y + 5) {
+    //       this.isPrompt = true;
+    //       this.$refs.proTop.innerText = this.circles[i].type + '人员';
+    //       this.$refs.proCon.innerText = `${this.circles[i].type}日期：${this.circles[i].time}`;
+    //       this.$refs.prompt.style.top = y + 'px';
+    //       this.$refs.prompt.style.left = x + 'px';
+    //       this.$refs.prompt.style.display = 'block';
+    //       flag = true;
+    //       break;
+    //     }
+    //   }
+    //   if (!flag) {
+    //     this.isPrompt = false;
+    //   }
+    // },
 
     // 让小球显示或隐藏
     toShowBall(index) {

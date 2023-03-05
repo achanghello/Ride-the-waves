@@ -14,7 +14,7 @@ export default {
     name: 'Notice',
     props: {
         number: {
-            type: Number,
+           
             required: true
         },
         type: {
