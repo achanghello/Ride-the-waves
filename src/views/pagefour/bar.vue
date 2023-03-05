@@ -5,9 +5,17 @@
     <script>
   export default {
     name: "bar",
+    props: {
+      beforefive: { // 下拉框字典数据
+         type: Array,
+         default: () => {
+            return [1]
+         }
+      }
+   },
     data(){
       return {
-         label: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],//x轴的标题
+         label: ["湖北", "浙江", "广东", "河南", "湖南", "安徽", "江西"],//x轴的标题
          dataSets: [{
                     bDistance: 30, //绘制的边框距离画布边框的距离
                     bInterval: 20, //两个柱状图之间的距离
@@ -20,16 +28,44 @@
                  }, {
                     fillColor: "white", //矩形填充颜色
                     xtitle: "感染人数（人）", //x轴标题
-                    ytitle: "星期" //y轴标题
+                    ytitle: "排名前七" //y轴标题
                     
-                 }]
+                 }],
+                 ctx:null,
+                 bar:null
       }
     },
     mounted(){
-        var bar = this.$refs.bar
-        const {label,dataSets} = this
-        this.barChart(bar, {label,dataSets}); //画柱状图
+        this.bar = this.$refs.bar
+        console.log(this.bar);
+        this.ctx = this.bar.getContext("2d")
+        const {label,dataSets,ctx} = this
+        this.barChart(this.bar, {label,dataSets},ctx); //画柱状图
     },
+    watch: {
+      beforefive: {
+         handler(newVal, oldVal) {
+            console.log(newVal,'-------');
+            this.dataSets[0].values[0] = Number(newVal[0].confirmedCount)
+           this.dataSets[0].values[1] = Number(newVal[1].confirmedCount)
+           this.dataSets[0].values[2] = Number(newVal[2].confirmedCount)
+           this.dataSets[0].values[3] = Number(newVal[3].confirmedCount)
+           this.dataSets[0].values[4] = Number(newVal[4].confirmedCount)
+           this.dataSets[0].values[5] = Number(newVal[5].confirmedCount)
+           this.dataSets[0].values[6] = Number(newVal[6].confirmedCount)
+           this.label[0] = newVal[0].provinceShortName
+           this.label[1] = newVal[1].provinceShortName
+           this.label[2] = newVal[2].provinceShortName
+           this.label[3] = newVal[3].provinceShortName
+           this.label[4] = newVal[4].provinceShortName
+           this.label[5] = newVal[5].provinceShortName
+           this.label[6] = newVal[6].provinceShortName
+           this.ctx.clearRect(0,0,this.width,this.hight)
+           // console.log(this.dataSets);
+           this.barChart(this.bar, {label:this.label,dataSets:this.dataSets},this.ctx); //画柱状图
+         }
+      },
+   },
     computed:{
       hight(){
          // console.log("组件的高度---",window.innerHeight*0.3)
@@ -43,10 +79,9 @@
         /*柱状图
          * elem:要操作的画布元素
          * data:所需格式的数据*/
-         barChart(elem, data) {
+         barChart(elem, data, ctx) {
            if (elem.getContext) {
-              var ctx = elem.getContext("2d"),
-                 mywidth = elem.width, //画布的宽高
+               var mywidth = elem.width, //画布的宽高
                  myheight = elem.height,
                  bDistance = parseInt(data.dataSets[0].bDistance), //图标边框到画布间距
                  bInterval = data.dataSets[0].bInterval, //矩形间间距

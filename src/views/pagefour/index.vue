@@ -1,22 +1,22 @@
 <template>
   <div class="pageone">
     <div class="title">
-      <!-- <h1>关于疫情的可视化作品</h1> -->
+      <h1>关于疫情的可视化作品</h1>
       <VueAmazingSelector :selectData="selectData" :defaultValue="defaultValue" name="label" value="value"
         placeholder="请选择月份" :width="160" :height="36" :num="6" v-model="selectedValue" @change="onChange" color="#fff">
       </VueAmazingSelector>
     </div>
     <div class="content">
       <div class="content-col no-map" :style="`width:${width}px;`">
-        <Bar></Bar>
-        <Pie></Pie>
+        <Bar :beforefive="beforefive"></Bar>
+        <Pie :showlist="showlist"></Pie>
         <div class="logo-out" :style="`width:${width}px;height:${hight}px;`" @click="hahah">
           <div class="logo" :style="`width:${width}px;height:${hight}px;`" :class="{ fan: !flag, zheng: flag }">
 
           </div>
           <div class="test" :style="`width:${width}px;height:${hight}px;`" :class="{ fan: flag, zheng: !flag }">
             <h3>乘风破浪打工队</h3>
-            <p>一群志同道合的人聚在一起，做一件有意义的事！！！</p>
+            <p>一群志同道合的人聚在一起，做一件有意义的事！！!</p>
           </div>
         </div>
 
@@ -25,8 +25,8 @@
         <Mapc @showdata="showdata"></Mapc>
       </div>
       <div class="content-col no-map" :style="`width:${width}px;`">
-        <Linec></Linec>
-        <Curve></Curve>
+        <Linec :currentmonth="currentmonth"></Linec>
+        <Curve :currentmonth="currentmonth"></Curve>
         <Show :showlist="showlist"></Show>
       </div>
     </div>
@@ -48,18 +48,6 @@ export default {
   data() {
     return {
       flag: true,
-      showlistlast: {
-        confirmedCount: 0,//累计确诊
-        confirmedIncr: 0,//新增确诊
-        curedCount: 0,//累计治愈
-        curedIncr: 0,//新增治愈
-        currentConfirmedCount: 0,//现存确诊
-        currentConfirmedIncr: 0,//新增现存确诊
-        deadCount: 0,//累计死亡
-        deadIncr: 0,//新增死亡
-        suspectedCount: 0,//累计疑似
-        suspectedCountIncr: 0,//新增疑似
-      },
       showlist: {
         confirmedCount: 0,//累计确诊
         confirmedIncr: 0,//新增确诊
@@ -130,6 +118,11 @@ export default {
     },
     map() {
       return window.innerWidth * 3 / 7
+    },
+    beforefive() {
+      let arr = this.datas.filter((item) => item.dateId == `20200${this.selectedValue}01`)
+      arr.sort((x,y)=>Number(y.confirmedCount)-Number(x.confirmedCount))
+      return arr.slice(0,7)
     }
   },
   components: {

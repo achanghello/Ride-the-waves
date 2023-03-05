@@ -105,10 +105,10 @@ import axios from 'axios'
                             ctx.textAlign = 'center'
                             ctx.textBaseLine = 'center'
                             let n1=dataArr[i].properties.name
-                            let textInc='今日新增:'
-                            let textRec='今日治愈:'
-                            ctx.fillText(n1+textInc+'11', -220, 100);
-                            ctx.fillText(n1+textRec+'200', -220, 120);
+                            // let textInc='今日新增:'
+                            // let textRec='今日治愈:'
+                            // ctx.fillText(n1+textInc+'11', -220, 100);
+                            // ctx.fillText(n1+textRec+'200', -220, 120);
                             //ctx.fillText='111'
                         }
                     } else {

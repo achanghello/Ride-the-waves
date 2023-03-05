@@ -4,32 +4,41 @@
       
     <script>
   export default {
+   props: {
+      currentmonth: { // 下拉框字典数据
+         type: Array,
+         default: () => {
+            return [115, 35, 210, 100, 300, 220, 40, 115, 35, 210, 100, 300, 220, 40]
+         }
+      }
+   },
     data(){
       return {
-         // newData: {
-         //         labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-         //         values: [100, 40, 200, 50, 10, 80, 100],
-         //         txtSet: {
-         //            txtfont: "14px microsoft yahei",
-         //            txtalgin: "center",
-         //            txtbaseline: "middle",
-         //            txtColor: "#000000"
-         //         },
-         //         bgSet: {
-         //            lineColor: "#C0C0C0",
-         //            lineWidth: 1,
-         //         },
-         //         lineColor: "blue",
-         //         circleColor: "red",
-         //         yAxis: {
-         //            x: 50,
-         //            y: 11,
-         //            title: "感染人数（人）"
-         //         }
-         // },
+         newData: {
+                 labels: ["累计确诊", "新增确诊", "累计治愈", "新增治愈", "累计死亡", "累计疑似"],
+                 values: [100, 40, 200, 50, 10, 80],
+                 lineColor: "yellow",//折线颜色
+                 circleColor: "red",
+                 txtSet: {//绘制文本设置
+                    txtfont: "14px microsoft yahei",
+                    txtalgin: "center",
+                    txtbaseline: "middle",
+                    txtColor: "#fff"
+                 },
+                 bgSet: {//绘制背景线设置
+                    lineColor: "#C0C0C0",
+                    lineWidth: 1,
+  
+                 },
+                 yAxis: {//y轴表示什么，及绘制文本的位置
+                    x: 50,
+                    y: 11,
+                    title: "感染人数（人）"
+                 }
+         },
          datas: {
-                 labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],//标签
-                 values: [50, 180, 100, 150, 110, 130, 30],//值
+                 labels: ["20年第一季度","20年第二季度","20年第三季度","20年第四季度"],//标签
+                 values: [-6.8,3.2,4.9,6.5],//值
                  txtSet: {//绘制文本设置
                     txtfont: "14px microsoft yahei",
                     txtalgin: "center",
@@ -46,18 +55,41 @@
                  yAxis: {//y轴表示什么，及绘制文本的位置
                     x: 50,
                     y: 11,
-                    title: "感染人数（人）"
+                    title: "      经济同比增长（%）"
                  }
          },
-         line: null
+         line: null,
+         ctx: null
       }
     },
     mounted(){
       this.line = this.$refs.linec
-      this.lineChart(this.line, this.datas);//画折线图
-           //lineChart(line,newData);//在同一个canvas画第二条折线图
+      this.ctx = this.line.getContext("2d"),
+      this.lineChart(this.line, this.datas,this.ctx);//画折线图
+      // this.lineChart(this.line,this.newData,this.ctx);//在同一个canvas画第二条折线图
            //curveChart();//绘制曲线
     },
+   //  watch: {
+   //    currentmonth: {
+   //       handler(newVal, oldVal) {
+   //          this.ctx.clearRect(0,0,this.width,this.hight)
+   //          this.datas.values[0] = Number(newVal[0].confirmedCount)
+   //         this.datas.values[1] = Number(newVal[0].confirmedIncr)
+   //         this.datas.values[2] = Number(newVal[0].curedCount)
+   //         this.datas.values[3] = Number(newVal[0].curedIncr)
+   //         this.datas.values[4] = Number(newVal[0].deadCount)
+   //         this.datas.values[5] = Number(newVal[0].suspectedCount)
+   //         this.lineChart(this.line, this.datas,this.ctx);//画折线图
+   //         this.newData.values[0] = Number(newVal[newVal.length-1].confirmedCount)
+   //         this.newData.values[1] = Number(newVal[newVal.length-1].confirmedIncr)
+   //         this.newData.values[2] = Number(newVal[newVal.length-1].curedCount)
+   //         this.newData.values[3] = Number(newVal[newVal.length-1].curedIncr)
+   //         this.newData.values[4] = Number(newVal[newVal.length-1].deadCount)
+   //         this.newData.values[5] = Number(newVal[newVal.length-1].suspectedCount)
+   //         this.lineChart(this.line,this.newData,this.ctx);//在同一个canvas画第二条折线图
+   //       }
+   //    },
+   // },
     computed:{
       hight(){
          //console.log("组件的高度---",window.innerHeight*0.3)
@@ -71,10 +103,10 @@
         /*绘制折线
          elem:操作的元素
          data：所需格式数据*/
-         lineChart(elem, data) {
+         lineChart(elem, data, ctx) {
            if (elem.getContext) {
-              var ctx = elem.getContext("2d"),
-                 labels = data.labels,//数值对应标签
+              // var ctx = elem.getContext("2d"),
+                var labels = data.labels,//数值对应标签
                  values = data.values,//数值
                  len = labels.length,//标签/数值个数
                  elemWidth = elem.width,//画布宽度
@@ -128,10 +160,10 @@
                  }
               }
               //当最大值大于画布可绘制区域的高度时，对数据进行转化，然后进行画图
-              if ((4 * gridHeight) < maxValue) {
+              if ((4 * gridHeight) > maxValue) {
                  for (var i = 0; i < len; i++) {
                     //转换后的数据
-                    cData[i] = values[i] * 4 * gridHeight / maxValue;
+                    cData[i] = values[i] * 4 * gridHeight/ 2 / maxValue + (elemHeight-50) / 2;
                  }
               } else {
                  cData = values;
