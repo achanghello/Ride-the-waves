@@ -1,5 +1,5 @@
 <template>
-   <canvas ref="linec" :width="width" :height="hight" style="background:#0c1a46;float:right;"></canvas>
+   <canvas ref="linec" :width="width" :height="hight" style="background:#0c1a46;"></canvas>
 </template>
       
     <script>

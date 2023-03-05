@@ -4,10 +4,10 @@
         <h1>关于疫情的可视化作品</h1>
       </div>
       <div class="content">
-        <div class="content-col no-map">
+        <div class="content-col no-map" :style="`width:${width}px;`">
           <Bar></Bar>
           <Pie></Pie>
-          <div class="logo-out" @click="hahah">
+          <div class="logo-out" :style="`width:${width}px;height:${hight}px;`" @click="hahah">
             <div class="logo" :style="`width:${width}px;height:${hight}px;`" :class="{fan:!flag, zheng:flag}" >
 
             </div>
@@ -18,10 +18,10 @@
           </div>
           
         </div>
-        <div class="content-col map">
+        <div class="content-col map" :style="`width:${map}px;`">
           <Mapc @showdata="showdata"></Mapc>
         </div>
-        <div class="content-col no-map right">
+        <div class="content-col no-map" :style="`width:${width}px;`">
           <Linec></Linec>
           <Curve></Curve>
           <Show :showlist="showlist"></Show>
@@ -79,6 +79,9 @@
       },
       width(){
          return window.innerWidth*2/7
+      },
+      map() {
+        return window.innerWidth*3/7
       }
     },
     components: {
@@ -121,8 +124,6 @@
       // flex: 2;
       // background-color: pink;
       .logo-out{
-        width: 487px;
-        height: 240.6px;
         position: relative; 
         .logo {
         position: absolute;
@@ -139,16 +140,12 @@
       }
       
     }
-    .right {
-      // display:flex;
-      // flex-direction: column;
-    }
-    .map {
-      flex: 3;
-    }
-    .no-map {
-      flex: 2;
-    }
+    // .map {
+    //   flex: 3;
+    // }
+    // .no-map {
+    //   flex: 2;
+    // }
   }
   }
   /* 1.过渡动画 */
