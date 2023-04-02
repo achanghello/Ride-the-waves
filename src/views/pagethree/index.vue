@@ -7,8 +7,10 @@
     </div>
     <svg id="svg" width="1250px" height="611px">
       <Bgscale :maxvalue="maxvalue" ref="bgscale"></Bgscale>
-      <template v-for="(item, index) in departments">
+      <template>
         <Baritem
+          v-for="(item, index) in departments"
+          v-bind:key="item.provinceName"
           :jkey="item.provinceName"
           :color="item.color"
           :value="item[currentshow]"
